@@ -1,17 +1,20 @@
-import { Box, TextField, Button } from "@mui/material";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Box, TextField, Button } from "@mui/material";
+import { createTask } from "../redux/actions";
 
-export const CreateTask = ({ addTask }) => {
-  const [value, setValue] = useState("");
+export const CreateTask = () => {
+  const dispatch = useDispatch();
+  const [title, setTitle] = useState("");
   const [error, setError] = useState(null);
   const handleCreateTask = () => {
-    if (!value.trim()) {
+    if (!title.trim()) {
       setError("Опишите задачу");
       return;
     }
     setError(null);
-    addTask(value);
-    setValue("");
+    dispatch(createTask({ title, id: crypto.randomUUID() }));
+    setTitle("");
   };
 
   return (
@@ -35,9 +38,9 @@ export const CreateTask = ({ addTask }) => {
         placeholder="Опишите задачу"
         error={Boolean(error)}
         helperText={error}
-        value={value}
+        value={title}
         onChange={(e) => {
-          setValue(e.target.value);
+          setTitle(e.target.value);
           if (error) setError(null);
         }}
       />

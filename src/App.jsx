@@ -1,72 +1,21 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Header } from "./components/Header";
 import { CreateTask } from "./components/CreateTask";
 import { TaskList } from "./components/TaskList";
 import { FilterControl } from "./components/FilterControl";
 import { Box, Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { clearCompletedTasks } from "./redux/actions";
 
 function App() {
   const [filterMode, setFilterMode] = useState("all");
-  const [tasks, setTasks] = useState([]);
-  const [hasLoaded, setHasLoaded] = useState(false);
-
-  useEffect(() => {
-    try {
-      const savedTasks = localStorage.getItem("tasks");
-      if (savedTasks) setTasks(JSON.parse(savedTasks));
-    } catch (e) {
-      console.error(e);
-    }
-    setHasLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (hasLoaded) {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
-  }, [tasks, hasLoaded]);
-
-  const addTask = (title) => {
-    setTasks((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        title,
-        isDone: false,
-        isVisible: true,
-      },
-    ]);
-  };
-
-  const setComplete = (id) => {
-    setTasks((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, isDone: !item.isDone } : item,
-      ),
-    );
-  };
-
-  const editTask = (id, newTitle) => {
-    setTasks((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, title: newTitle } : item,
-      ),
-    );
-  };
-
-  const deleteTask = (id) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
-  };
-
-  const clearCompletedTasks = () => {
-    setTasks((prev) => prev.filter((task) => !task.isDone));
-  };
+  const dispatch = useDispatch();
 
   return (
     <>
       <Header />
-      <CreateTask addTask={addTask} />
+      <CreateTask />
       <Box
         sx={{
           display: "flex",
@@ -78,19 +27,13 @@ function App() {
         <FilterControl filterMode={filterMode} setFilterMode={setFilterMode} />
         <Button
           variant="contained"
-          onClick={clearCompletedTasks}
+          onClick={() => dispatch(clearCompletedTasks())}
           sx={{ textTransform: "none" }}
         >
           Удалить выполненные
         </Button>
       </Box>
-      <TaskList
-        tasks={tasks}
-        filterMode={filterMode}
-        setComplete={setComplete}
-        editTask={editTask}
-        deleteTask={deleteTask}
-      />
+      <TaskList filterMode={filterMode} />
     </>
   );
 }

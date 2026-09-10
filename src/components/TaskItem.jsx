@@ -9,11 +9,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { useRef, useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { completeTask, deleteTask, editTask } from "../redux/actions";
 
-export const TaskItem = ({ task, setComplete, editTask, deleteTask }) => {
+export const TaskItem = ({ task }) => {
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const editInputRef = useRef();
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export const TaskItem = ({ task, setComplete, editTask, deleteTask }) => {
     }
   }, [editMode]);
   const handleComplete = () => {
-    setComplete(task.id);
+    dispatch(completeTask(task.id));
   };
 
   const handleEditTask = () => {
@@ -37,7 +40,7 @@ export const TaskItem = ({ task, setComplete, editTask, deleteTask }) => {
       setError("У задачи должно быть описание");
       return;
     }
-    editTask(task.id, title.trim());
+    dispatch(editTask({ id: task.id, title: title.trim() }));
     setEditMode(false);
     setError(null);
   };
@@ -94,7 +97,7 @@ export const TaskItem = ({ task, setComplete, editTask, deleteTask }) => {
         onChange={handleEditTask}
         onKeyDown={(e) => e.preventDefault()}
       />
-      <IconButton onClick={() => deleteTask(task.id)}>
+      <IconButton onClick={() => dispatch(deleteTask(task.id))}>
         <DeleteIcon />
       </IconButton>
     </ListItem>
