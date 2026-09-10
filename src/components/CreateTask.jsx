@@ -1,0 +1,53 @@
+import { Box, TextField, Button } from "@mui/material";
+import { useState } from "react";
+
+export const CreateTask = ({ addTask }) => {
+  const [value, setValue] = useState("");
+  const [error, setError] = useState(null);
+  const handleCreateTask = () => {
+    if (!value.trim()) {
+      setError("Опишите задачу");
+      return;
+    }
+    setError(null);
+    addTask(value);
+    setValue("");
+  };
+
+  return (
+    <Box
+      component="form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleCreateTask();
+      }}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "start",
+        gap: 3,
+        p: 2,
+      }}
+    >
+      <TextField
+        size="small"
+        label={"Новая задача"}
+        placeholder="Опишите задачу"
+        error={Boolean(error)}
+        helperText={error}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          if (error) setError(null);
+        }}
+      />
+      <Button
+        variant="contained"
+        sx={{ textTransform: "none" }}
+        onClick={handleCreateTask}
+      >
+        Добавить
+      </Button>
+    </Box>
+  );
+};
