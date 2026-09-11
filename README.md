@@ -1,16 +1,38 @@
-# React + Vite
+# React + Vite + Redux
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Cхема файлов Redux
 
-Currently, two official plugins are available:
+![Cхема файлов Redux](./src/assets/image.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Пример Action
 
-## React Compiler
+```javascript
+export const deleteTask = (id) => ({ type: "DELETE", payload: id });
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Пример Reducer
 
-## Expanding the ESLint configuration
+```javascript
+const initialState = {
+  allTasks: [],
+  filterMode: "FILTER_ALL",
+};
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+export const todoReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case "DELETE":
+      return {
+        ...state,
+        allTasks: state.allTasks.filter((task) => task.id !== action.payload),
+      };
+    default:
+      return state;
+  }
+};
+```
+
+## Про Provider, useSelector, useDispatch
+
+- Provider - предоставляет доступ к стору дочерним компонентам
+- useSelector - возвращает выбранную часть состояния, и подписывает компонент на его изменения
+- useDispatch - возвращает функцию dispatch для отправки экшенов в стор
