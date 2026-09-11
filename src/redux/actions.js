@@ -4,3 +4,4 @@ export const editTask = (data) => ({ type: "EDIT", payload: data });
 export const completeTask = (id) => ({ type: "COMPLETE", payload: id });
 export const deleteTask = (id) => ({ type: "DELETE", payload: id });
 export const clearCompletedTasks = () => ({ type: "CLEAR_COMPLETED" });
+export const filterTasks = (type) => ({ type: type });

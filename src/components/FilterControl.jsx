@@ -5,22 +5,30 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { filterTasks } from "../redux/actions";
 
-export const FilterControl = ({ filterMode, setFilterMode }) => {
+export const FilterControl = () => {
+  const { filterMode } = useSelector((state) => state);
+  const dispatch = useDispatch();
   return (
     <FormControl>
       <FormLabel>Показать:</FormLabel>
       <RadioGroup
         row
-        defaultValue="all"
+        defaultValue="FILTER_ALL"
         value={filterMode}
-        onChange={(e) => setFilterMode(e.target.value)}
+        onChange={(e) => dispatch(filterTasks(e.target.value))}
         sx={{ display: "flex", justifyContent: "center" }}
       >
-        <FormControlLabel value="all" label="Все" control={<Radio />} />
-        <FormControlLabel value="active" label="Активные" control={<Radio />} />
+        <FormControlLabel value="FILTER_ALL" label="Все" control={<Radio />} />
         <FormControlLabel
-          value="complete"
+          value="FILTER_ACTIVE"
+          label="Активные"
+          control={<Radio />}
+        />
+        <FormControlLabel
+          value="FILTER_COMPLETED"
           label="Завершенные"
           control={<Radio />}
         />

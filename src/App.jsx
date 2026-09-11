@@ -1,5 +1,4 @@
 import "./App.css";
-import { useState } from "react";
 import { Header } from "./components/Header";
 import { CreateTask } from "./components/CreateTask";
 import { TaskList } from "./components/TaskList";
@@ -9,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { clearCompletedTasks } from "./redux/actions";
 
 function App() {
-  const [filterMode, setFilterMode] = useState("all");
   const dispatch = useDispatch();
 
   return (
@@ -24,7 +22,7 @@ function App() {
           gap: 5,
         }}
       >
-        <FilterControl filterMode={filterMode} setFilterMode={setFilterMode} />
+        <FilterControl />
         <Button
           variant="contained"
           onClick={() => dispatch(clearCompletedTasks())}
@@ -33,7 +31,7 @@ function App() {
           Удалить выполненные
         </Button>
       </Box>
-      <TaskList filterMode={filterMode} />
+      <TaskList />
     </>
   );
 }
