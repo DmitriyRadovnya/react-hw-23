@@ -10,7 +10,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { completeTask, deleteTask, editTask } from "../redux/actions";
+import { completeTask, deleteTask, editTask } from "../redux/actions/actions";
 
 export const TaskItem = ({ task }) => {
   const [editMode, setEditMode] = useState(false);

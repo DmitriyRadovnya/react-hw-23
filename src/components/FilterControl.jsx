@@ -6,7 +6,7 @@ import {
   RadioGroup,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { filterTasks } from "../redux/actions";
+import { filterTasks } from "../redux/actions/actions";
 
 export const FilterControl = () => {
   const { filterMode } = useSelector((state) => state);

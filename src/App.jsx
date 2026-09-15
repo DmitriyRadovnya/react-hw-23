@@ -1,19 +1,20 @@
 import "./App.css";
 import { Header } from "./components/Header";
-import { CreateTask } from "./components/CreateTask";
+// import { CreateTask } from "./components/CreateTask";
 import { TaskList } from "./components/TaskList";
-import { FilterControl } from "./components/FilterControl";
-import { Box, Button } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { clearCompletedTasks } from "./redux/actions";
+// import { FilterControl } from "./components/FilterControl";
+// import { Box, Button } from "@mui/material";
+// import { useDispatch } from "react-redux";
+// import { clearCompletedTasks } from "./redux/actions/actions";
+// import { getTasks } from "./redux/actions/apiActions";
 
 function App() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   return (
     <>
       <Header />
-      <CreateTask />
+      {/* <CreateTask />
       <Box
         sx={{
           display: "flex",
@@ -30,7 +31,7 @@ function App() {
         >
           Удалить выполненные
         </Button>
-      </Box>
+      </Box> */}
       <TaskList />
     </>
   );

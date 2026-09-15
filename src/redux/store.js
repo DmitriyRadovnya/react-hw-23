@@ -1,4 +1,19 @@
-import { legacy_createStore as createStore } from "redux";
-import { todoReducer } from "./todoReducer";
+import {
+  legacy_createStore as createStore,
+  combineReducers,
+  applyMiddleware,
+} from "redux";
+import { thunk } from "redux-thunk";
+import { todoReducer } from "./reducers/todoReducer";
+import { apiReducer } from "./reducers/apiReducer";
+import { loggerMiddleware } from "./loggerMiddleware";
 
-export const todoStore = createStore(todoReducer);
+const rootReducer = combineReducers({
+  base: todoReducer,
+  api: apiReducer,
+});
+
+export const todoStore = createStore(
+  rootReducer,
+  applyMiddleware(thunk, loggerMiddleware),
+);
