@@ -1,3 +1,39 @@
+# React + Vite + Redux Toolkit + createAsyncThunk
+
+## жизненный цикл createAsyncThunk
+
+- pending - выполняется в момент вызова экшена, до завершения асинхронной операции
+- fulfilled - выполняется в момент получения успешного результата вызова экшена
+- rejected - выполняется в случае возникновения ошибки
+
+## Что такое `pending`, `fulfilled`, `rejected`
+
+Состояния асинхронного экшена которые обрабатываются в extraReducers для отслеживания жизненного цикла асинхронной операции
+
+## Пример `extraReducers`
+
+```javascript
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTasks.pending, (state) => {
+        state.error = null;
+        state.loading = true;
+      })
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tasks = action.payload;
+      })
+      .addCase(fetchTasks.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+```
+
+## Почему этот подход удобнее ручных thunk actions
+
+Такой подход автоматизирует создание экшенов для обработки состояний запроса: pending, fulfilled, rejected. Что как следствие уменьшает дублирование однообразного кода
+
 # React + Vite + Redux Toolkit
 
 ## Cравнение структуры классического Redux и Redux Toolkit
