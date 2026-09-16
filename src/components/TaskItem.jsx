@@ -10,7 +10,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { completeTask, deleteTask, editTask } from "../redux/actions";
+import { completeTask, deleteTask, editTask } from "../rtk/tasksSlice";
 
 export const TaskItem = ({ task }) => {
   const [editMode, setEditMode] = useState(false);
@@ -67,10 +67,10 @@ export const TaskItem = ({ task }) => {
 
   return (
     <ListItem>
-      <Checkbox checked={task.isDone} onChange={handleComplete} />
+      <Checkbox checked={task.completed} onChange={handleComplete} />
       {!editMode ? (
         <ListItemText
-          sx={{ textDecoration: task.isDone ? "line-through" : "none" }}
+          sx={{ textDecoration: task.completed ? "line-through" : "none" }}
         >
           {title}
         </ListItemText>

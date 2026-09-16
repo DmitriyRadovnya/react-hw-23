@@ -2,13 +2,13 @@ import { List } from "@mui/material";
 import { TaskItem } from "./TaskItem";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { loadTasks } from "../redux/actions";
+import { filterTasks } from "../rtk/filterSelector";
+import { loadTasks } from "../rtk/tasksSlice";
 
 export const TaskList = () => {
-  const { allTasks, filterMode } = useSelector((state) => state);
+  const tasks = useSelector(filterTasks);
   const dispatch = useDispatch();
   const [hasLoaded, setHasLoaded] = useState(false);
-  console.log(filterMode);
 
   useEffect(() => {
     try {
@@ -22,15 +22,15 @@ export const TaskList = () => {
 
   useEffect(() => {
     if (hasLoaded) {
-      localStorage.setItem("tasks", JSON.stringify(allTasks));
+      localStorage.setItem("tasks", JSON.stringify(tasks));
     }
-  }, [allTasks, hasLoaded]);
+  }, [tasks, hasLoaded]);
 
   return (
     <List>
-      {allTasks.map(
-        (task) => task.isVisible && <TaskItem key={task.id} task={task} />,
-      )}
+      {tasks.map((task) => (
+        <TaskItem key={task.id} task={task} />
+      ))}
     </List>
   );
 };

@@ -5,7 +5,7 @@ import { TaskList } from "./components/TaskList";
 import { FilterControl } from "./components/FilterControl";
 import { Box, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { clearCompletedTasks } from "./redux/actions";
+import { clearCompleted } from "./rtk/tasksSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ function App() {
         <FilterControl />
         <Button
           variant="contained"
-          onClick={() => dispatch(clearCompletedTasks())}
+          onClick={() => dispatch(clearCompleted())}
           sx={{ textTransform: "none" }}
         >
           Удалить выполненные

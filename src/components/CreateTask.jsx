@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Box, TextField, Button } from "@mui/material";
-import { createTask } from "../redux/actions";
+import { createTask } from "../rtk/tasksSlice";
 
 export const CreateTask = () => {
   const dispatch = useDispatch();
