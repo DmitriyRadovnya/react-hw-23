@@ -1,36 +1,46 @@
-import { List } from "@mui/material";
+import { List, Button } from "@mui/material";
 import { TaskItem } from "./TaskItem";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { filterTasks } from "../rtk/filterSelector";
-import { loadTasks } from "../rtk/tasksSlice";
+import { useEffect } from "react";
+import { fetchTasks } from "../rtk/tasksSlice";
 
 export const TaskList = () => {
-  const tasks = useSelector(filterTasks);
+  const { tasks, loading, error } = useSelector((state) => state.tasks);
   const dispatch = useDispatch();
-  const [hasLoaded, setHasLoaded] = useState(false);
-
   useEffect(() => {
-    try {
-      const savedTasks = localStorage.getItem("tasks");
-      if (savedTasks) dispatch(loadTasks(JSON.parse(savedTasks)));
-    } catch (e) {
-      console.error(e);
-    }
-    setHasLoaded(true);
+    dispatch(fetchTasks());
   }, []);
 
-  useEffect(() => {
-    if (hasLoaded) {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
-  }, [tasks, hasLoaded]);
+  if (error)
+    return (
+      <>
+        <h2>{error}</h2>
+        <Button
+          variant="contained"
+          onClick={() => dispatch(fetchTasks())}
+          sx={{ textTransform: "none" }}
+        >
+          Повторить запрос
+        </Button>
+      </>
+    );
+
+  if (tasks.length === 0) return <h2>Добавьте вашу первую задачу</h2>;
 
   return (
     <List>
-      {tasks.map((task) => (
-        <TaskItem key={task.id} task={task} />
-      ))}
+      <Button
+        variant="contained"
+        onClick={() => dispatch(fetchTasks())}
+        sx={{ textTransform: "none" }}
+      >
+        Обновить данные
+      </Button>
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : (
+        tasks.map((task) => <TaskItem key={task.id} task={task} />)
+      )}
     </List>
   );
 };

@@ -1,8 +1,23 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../api/todoApi";
 
 const initialState = {
   tasks: [],
+  loading: false,
+  error: null,
 };
+
+export const fetchTasks = createAsyncThunk(
+  "tasks/fetchTasks",
+  async (_, thunkAPI) => {
+    try {
+      const response = await api.get("api/todos");
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Ошибка загрузки тасок");
+    }
+  },
+);
 
 const tasksSlice = createSlice({
   name: "tasks",
@@ -31,6 +46,22 @@ const tasksSlice = createSlice({
     clearCompleted(state) {
       state.tasks = state.tasks.filter((task) => !task.completed);
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTasks.pending, (state) => {
+        state.error = null;
+        state.loading = true;
+      })
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload);
+        state.tasks = action.payload;
+      })
+      .addCase(fetchTasks.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
