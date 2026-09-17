@@ -1,22 +1,33 @@
 import {
+  Alert,
   Checkbox,
   IconButton,
   ListItem,
   ListItemText,
+  Snackbar,
   TextField,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { useRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { completeTask, deleteTask, editTask } from "../rtk/tasksSlice";
+import {
+  useCompleteTaskMutation,
+  useDeleteTaskMutation,
+  useEditTaskMutation,
+  useLazyGetTaskQuery,
+} from "../rtk/rtk-query/apiSlice";
 
 export const TaskItem = ({ task }) => {
+  const [deleteTask, { isLoading: isLoadingDelete }] = useDeleteTaskMutation();
+  const [completeTask, { isLoading: isLoadingComplete }] =
+    useCompleteTaskMutation();
+  const [editTask] = useEditTaskMutation();
+  const [trigger, { data: currentTask, isSuccess, reset }] =
+    useLazyGetTaskQuery();
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [error, setError] = useState(null);
-  const dispatch = useDispatch();
   const editInputRef = useRef();
 
   useEffect(() => {
@@ -24,11 +35,11 @@ export const TaskItem = ({ task }) => {
       editInputRef.current?.focus();
     }
   }, [editMode]);
-  const handleComplete = () => {
-    dispatch(completeTask(task.id));
+  const handleComplete = async () => {
+    await completeTask(task.id);
   };
 
-  const handleEditTask = () => {
+  const handleEditTask = async () => {
     if (!editMode) {
       setTitle(task.title);
       setError(null);
@@ -40,7 +51,7 @@ export const TaskItem = ({ task }) => {
       setError("У задачи должно быть описание");
       return;
     }
-    dispatch(editTask({ id: task.id, title: title.trim() }));
+    await editTask({ id: task.id, newTitle: title.trim() });
     setEditMode(false);
     setError(null);
   };
@@ -67,9 +78,16 @@ export const TaskItem = ({ task }) => {
 
   return (
     <ListItem>
-      <Checkbox checked={task.completed} onChange={handleComplete} />
+      <Checkbox
+        checked={task.completed}
+        onChange={handleComplete}
+        disabled={isLoadingComplete}
+      />
       {!editMode ? (
         <ListItemText
+          onClick={() => {
+            trigger(task.id);
+          }}
           sx={{ textDecoration: task.completed ? "line-through" : "none" }}
         >
           {title}
@@ -97,9 +115,20 @@ export const TaskItem = ({ task }) => {
         onChange={handleEditTask}
         onKeyDown={(e) => e.preventDefault()}
       />
-      <IconButton onClick={() => dispatch(deleteTask(task.id))}>
+      <IconButton
+        onClick={async () => await deleteTask(task.id)}
+        disabled={isLoadingDelete}
+      >
         <DeleteIcon />
       </IconButton>
+      {currentTask && (
+        <Snackbar
+          open={isSuccess}
+          autoHideDuration={3000}
+          onClose={() => reset()}
+          message={currentTask.title}
+        />
+      )}
     </ListItem>
   );
 };

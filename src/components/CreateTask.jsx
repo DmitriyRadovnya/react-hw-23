@@ -1,19 +1,18 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { Box, TextField, Button } from "@mui/material";
-import { createTask } from "../rtk/tasksSlice";
+import { useCreateTaskMutation } from "../rtk/rtk-query/apiSlice";
 
 export const CreateTask = () => {
-  const dispatch = useDispatch();
+  const [createTask, { isLoading }] = useCreateTaskMutation();
   const [title, setTitle] = useState("");
   const [error, setError] = useState(null);
-  const handleCreateTask = () => {
+  const handleCreateTask = async () => {
     if (!title.trim()) {
       setError("Опишите задачу");
       return;
     }
     setError(null);
-    dispatch(createTask({ title, id: crypto.randomUUID() }));
+    await createTask({ title });
     setTitle("");
   };
 
@@ -46,6 +45,7 @@ export const CreateTask = () => {
       />
       <Button
         variant="contained"
+        disabled={isLoading}
         sx={{ textTransform: "none" }}
         onClick={handleCreateTask}
       >
