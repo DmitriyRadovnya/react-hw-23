@@ -1,3 +1,101 @@
+# React + Vite + RTK Query
+
+## Cтруктурa API slice
+
+```javascript
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const api = createApi({
+  // Базовая настройка запросов (базовый URL, заголовки)
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${import.meta.env.VITE_BASE_URL}/api`,
+    prepareHeaders: (headers) => {
+      const token = import.meta.env.VITE_BASE_TOKEN;
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
+  tagTypes: ["Tasks", "CurrentTask"],
+  // Конечные точки (запросы и мутации)
+  endpoints: (builder) => ({
+    getTasks: builder.query({
+      query: () => "/todos",
+      transformResponse: (response) => response.data,
+      providesTags: ["Tasks"],
+    }),
+    getTask: builder.query({
+      query: (id) => ({
+        url: `/todos/${id}`,
+        transformResponse: (response) => response,
+        providesTags: ["CurrentTask"],
+        keepUnusedDataFor: 5,
+      }),
+    }),
+    createTask: builder.mutation({
+      query: (newTask) => ({
+        url: "/todos",
+        method: "POST",
+        body: newTask,
+      }),
+      invalidatesTags: ["Tasks"],
+    }),
+    deleteTask: builder.mutation({
+      query: (id) => ({
+        url: `/todos/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Tasks"],
+    }),
+    completeTask: builder.mutation({
+      query: (id) => ({
+        url: `/todos/${id}/toggle`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["Tasks"],
+    }),
+    editTask: builder.mutation({
+      query: ({ id, newTitle }) => ({
+        url: `/todos/${id}`,
+        method: "PATCH",
+        body: { title: newTitle },
+      }),
+    }),
+  }),
+});
+
+// Автоматически сгенерированные хуки для компонентов
+export const {
+  useGetTasksQuery,
+  useLazyGetTaskQuery,
+  useCreateTaskMutation,
+  useDeleteTaskMutation,
+  useCompleteTaskMutation,
+  useEditTaskMutation,
+} = api;
+```
+
+## Список endpoints:
+
+- getTasks
+- getTask
+- createTask
+- deleteTask
+- completeTask
+- editTask
+
+## Как работают tags;
+
+Они связывают запросы и мутации, чтобы rtk query понял под каким ключом необходимо обновить(перезапросить) данные в кеше после изменений на сервере.
+
+- providesTags - кеширует данные под тегом
+- invalidatesTags - обновляет данные в кеше после мутации
+
+## Чем RTK Query отличается от `createAsyncThunk`
+
+RTK query позволяет не писать шаблонный код для простых CRUD запросов, что упрощает работу с API, в то время как createAsyncThunk более низкоуровневый подход, для болле сложных операций и запросов которые невозможно описать структурой эндроинтов
+
 # React + Vite + Redux Toolkit
 
 ## Cравнение структуры классического Redux и Redux Toolkit

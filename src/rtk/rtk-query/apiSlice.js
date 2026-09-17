@@ -11,6 +11,7 @@ export const api = createApi({
       return headers;
     },
   }),
+  tagTypes: ["Tasks", "CurrentTask"],
   endpoints: (builder) => ({
     getTasks: builder.query({
       query: () => "/todos",
