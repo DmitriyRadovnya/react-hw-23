@@ -9,13 +9,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import { useRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { completeTask, deleteTask, editTask } from "../rtk/tasksSlice";
 
 export const TaskItem = ({ task }) => {
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [error, setError] = useState(null);
+  const {
+    edit: editLoading,
+    delete: deleteLoading,
+    complete: completeLoading,
+  } = useSelector((state) => state.tasks.loading);
   const dispatch = useDispatch();
   const editInputRef = useRef();
 
@@ -67,7 +72,11 @@ export const TaskItem = ({ task }) => {
 
   return (
     <ListItem>
-      <Checkbox checked={task.completed} onChange={handleComplete} />
+      <Checkbox
+        disabled={completeLoading}
+        checked={task.completed}
+        onChange={handleComplete}
+      />
       {!editMode ? (
         <ListItemText
           sx={{ textDecoration: task.completed ? "line-through" : "none" }}
@@ -92,12 +101,16 @@ export const TaskItem = ({ task }) => {
 
       <Checkbox
         checked={editMode}
+        disabled={editLoading}
         icon={<EditIcon />}
         checkedIcon={<SaveIcon />}
         onChange={handleEditTask}
         onKeyDown={(e) => e.preventDefault()}
       />
-      <IconButton onClick={() => dispatch(deleteTask(task.id))}>
+      <IconButton
+        disabled={deleteLoading}
+        onClick={() => dispatch(deleteTask(task.id))}
+      >
         <DeleteIcon />
       </IconButton>
     </ListItem>

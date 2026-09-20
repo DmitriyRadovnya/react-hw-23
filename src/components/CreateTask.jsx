@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Box, TextField, Button } from "@mui/material";
 import { createTask } from "../rtk/tasksSlice";
 
 export const CreateTask = () => {
   const dispatch = useDispatch();
+  const { create } = useSelector((state) => state.tasks.loading);
   const [title, setTitle] = useState("");
   const [error, setError] = useState(null);
   const handleCreateTask = () => {
@@ -46,6 +47,7 @@ export const CreateTask = () => {
       />
       <Button
         variant="contained"
+        disabled={create}
         sx={{ textTransform: "none" }}
         onClick={handleCreateTask}
       >

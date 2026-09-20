@@ -3,7 +3,13 @@ import api from "../api/todoApi";
 
 const initialState = {
   tasks: [],
-  loading: true,
+  loading: {
+    load: false,
+    create: false,
+    delete: false,
+    edit: false,
+    complete: false,
+  },
   error: null,
 };
 
@@ -81,31 +87,62 @@ const tasksSlice = createSlice({
     builder
       .addCase(fetchTasks.pending, (state) => {
         state.error = null;
-        state.loading = true;
+        state.loading.load = true;
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loading.load = false;
         state.tasks = action.payload;
       })
       .addCase(fetchTasks.rejected, (state, action) => {
-        state.loading = false;
+        state.loading.load = false;
         state.error = action.payload;
       });
-    builder.addCase(createTask.fulfilled, (state, action) => {
-      state.tasks.unshift(action.payload);
-    });
-    builder.addCase(deleteTask.fulfilled, (state, action) => {
-      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
-    });
-    builder.addCase(editTask.fulfilled, (state, action) => {
-      const task = state.tasks.find((t) => t.id === action.payload.id);
-      if (task) task.title = action.payload.title;
-    });
-
-    builder.addCase(completeTask.fulfilled, (state, action) => {
-      const task = state.tasks.find((t) => t.id === action.payload);
-      if (task) task.completed = !task.completed;
-    });
+    builder
+      .addCase(createTask.pending, (state) => {
+        state.loading.create = true;
+      })
+      .addCase(createTask.fulfilled, (state, action) => {
+        state.tasks.unshift(action.payload);
+        state.loading.create = false;
+      })
+      .addCase(createTask.rejected, (state) => {
+        state.loading.create = false;
+      });
+    builder
+      .addCase(deleteTask.pending, (state) => {
+        state.loading.delete = true;
+      })
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+        state.loading.delete = false;
+      })
+      .addCase(deleteTask.rejected, (state) => {
+        state.loading.delete = false;
+      });
+    builder
+      .addCase(editTask.pending, (state) => {
+        state.loading.edit = true;
+      })
+      .addCase(editTask.fulfilled, (state, action) => {
+        const task = state.tasks.find((t) => t.id === action.payload.id);
+        if (task) task.title = action.payload.title;
+        state.loading.edit = false;
+      })
+      .addCase(editTask.rejected, (state) => {
+        state.loading.edit = false;
+      });
+    builder
+      .addCase(completeTask.pending, (state) => {
+        state.loading.complete = true;
+      })
+      .addCase(completeTask.fulfilled, (state, action) => {
+        const task = state.tasks.find((t) => t.id === action.payload);
+        if (task) task.completed = !task.completed;
+        state.loading.complete = false;
+      })
+      .addCase(completeTask.rejected, (state) => {
+        state.loading.complete = false;
+      });
   },
 });
 

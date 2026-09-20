@@ -6,7 +6,11 @@ import { fetchTasks } from "../rtk/tasksSlice";
 import { filterTasks } from "../rtk/filterSelector";
 
 export const TaskList = () => {
-  const { tasks, loading, error } = useSelector((state) => state.tasks);
+  const {
+    tasks,
+    loading: { load },
+    error,
+  } = useSelector((state) => state.tasks);
   const filteredTasks = useSelector(filterTasks);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -26,7 +30,7 @@ export const TaskList = () => {
         </Button>
       </>
     );
-  if (loading) return <h2>Loading...</h2>;
+  if (load) return <h2>Loading...</h2>;
 
   if (tasks.length === 0) return <h2>Добавьте вашу первую задачу</h2>;
 
