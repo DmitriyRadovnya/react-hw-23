@@ -1,5 +1,21 @@
 # React + Vite + Redux Toolkit + createAsyncThunk
 
+## Описание flow async thunk
+
+1. После вызова thunk оправляется экшен со статусом pending
+2. Выполняется асинхронная операция
+3. Происходит завершение асинхронной операции с одним из двух статусов fulfilled или rejected
+
+## Структура стейта
+
+```javascript
+state = {
+  tasks: tasksReducer,
+  filter: filterReducer,
+  auth: authReducer,
+};
+```
+
 ## жизненный цикл createAsyncThunk
 
 - pending - выполняется в момент вызова экшена, до завершения асинхронной операции
