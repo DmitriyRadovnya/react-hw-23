@@ -15,15 +15,17 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "../validation/authSchemas";
-import { Link } from "react-router";
+import { registerSchema } from "../zod/authSchemas";
+import { Link, Navigate } from "react-router";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { signUp } from "../rtk/authSlice";
 
 export const RegisterPage = () => {
   const [showPass, setShowPass] = useState(false);
-  const { signUp } = useAuth();
+  const dispatch = useDispatch();
+  const isAuth = useSelector((store) => store.auth.isAuthenticated);
 
   const {
     control,
@@ -46,14 +48,16 @@ export const RegisterPage = () => {
     setShowPass((p) => !p);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     const user = {
       email: data.email,
       password: data.password,
       name: data.login,
     };
-    signUp.mutate(user);
+    dispatch(signUp(user));
   };
+
+  if (isAuth) return <Navigate to="/" replace />;
   return (
     <Box
       component="form"

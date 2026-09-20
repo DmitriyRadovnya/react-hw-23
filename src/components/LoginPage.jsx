@@ -10,15 +10,17 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "../validation/authSchemas";
-import { Link } from "react-router";
+import { loginSchema } from "../zod/authSchemas";
+import { Link, Navigate } from "react-router";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useAuth } from "../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { signIn } from "../rtk/authSlice";
 
 export const LoginPage = () => {
   const [showPass, setShowPass] = useState();
-  const { signIn } = useAuth();
+  const dispatch = useDispatch();
+  const isAuth = useSelector((store) => store.auth.isAuthenticated);
   const {
     watch,
     handleSubmit,
@@ -37,8 +39,11 @@ export const LoginPage = () => {
   };
 
   const onSubmit = (data) => {
-    signIn.mutate(data);
+    dispatch(signIn(data));
   };
+
+  if (isAuth) return <Navigate to="/" replace />;
+
   return (
     <Box
       component="form"

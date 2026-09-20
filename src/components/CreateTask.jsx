@@ -13,7 +13,7 @@ export const CreateTask = () => {
       return;
     }
     setError(null);
-    dispatch(createTask({ title, id: crypto.randomUUID() }));
+    dispatch(createTask(title));
     setTitle("");
   };
 

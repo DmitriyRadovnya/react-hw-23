@@ -1,38 +1,28 @@
+import { Routes, Route, Navigate, Outlet, useNavigate } from "react-router";
+import { RegisterPage } from "./components/RegisterPage";
+import { LoginPage } from "./components/LoginPage";
+import { Layout } from "./components/Layout";
+import { Todo } from "./components/Todo";
 import "./App.css";
-import { Header } from "./components/Header";
-import { CreateTask } from "./components/CreateTask";
-import { TaskList } from "./components/TaskList";
-import { FilterControl } from "./components/FilterControl";
-import { Box, Button } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { clearCompleted } from "./rtk/tasksSlice";
+import { useSelector } from "react-redux";
+
+const Protected = () => {
+  const isAuth = useSelector((store) => store.auth.isAuthenticated);
+  return isAuth ? <Outlet /> : <Navigate to="/register" replace />;
+};
 
 function App() {
-  const dispatch = useDispatch();
-
   return (
-    <>
-      <Header />
-      <CreateTask />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 5,
-        }}
-      >
-        <FilterControl />
-        <Button
-          variant="contained"
-          onClick={() => dispatch(clearCompleted())}
-          sx={{ textTransform: "none" }}
-        >
-          Удалить выполненные
-        </Button>
-      </Box>
-      <TaskList />
-    </>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/register" element={<RegisterPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route element={<Protected />}>
+          <Route index element={<Todo />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   );
 }
 
