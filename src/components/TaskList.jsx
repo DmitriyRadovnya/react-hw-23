@@ -3,9 +3,11 @@ import { TaskItem } from "./TaskItem";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchTasks } from "../rtk/tasksSlice";
+import { filterTasks } from "../rtk/filterSelector";
 
 export const TaskList = () => {
   const { tasks, loading, error } = useSelector((state) => state.tasks);
+  const filteredTasks = useSelector(filterTasks);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchTasks());
@@ -24,23 +26,15 @@ export const TaskList = () => {
         </Button>
       </>
     );
+  if (loading) return <h2>Loading...</h2>;
 
   if (tasks.length === 0) return <h2>Добавьте вашу первую задачу</h2>;
 
   return (
     <List>
-      <Button
-        variant="contained"
-        onClick={() => dispatch(fetchTasks())}
-        sx={{ textTransform: "none" }}
-      >
-        Обновить данные
-      </Button>
-      {loading ? (
-        <h2>Loading...</h2>
-      ) : (
-        tasks.map((task) => <TaskItem key={task.id} task={task} />)
-      )}
+      {filteredTasks.map((task) => (
+        <TaskItem key={task.id} task={task} />
+      ))}
     </List>
   );
 };

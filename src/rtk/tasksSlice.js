@@ -3,7 +3,7 @@ import api from "../api/todoApi";
 
 const initialState = {
   tasks: [],
-  loading: false,
+  loading: true,
   error: null,
 };
 
